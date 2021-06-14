@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">My Notes</string>
+
+    <string name="date_1">07.06.2021</string>
+    <string name="date_2">08.06.2021</string>
+    <string name="date_3">09.06.2021</string>
+    <string name="date_4">11.06.2021</string>
+    <string name="date_5">12.06.2021</string>
+
+    <string name="title_1">Планы на неделю</string>
+    <string name="title_2">Итоги встречи с поставщиком</string>
+    <string name="title_3">Косяки продавцов</string>
+    <string name="title_4">Брак форм</string>
+    <string name="title_5">Планы на выходные</string>
+
+    <string name="description_1">Провести встречу с поставщиком. Проанализировать деятельность продавцов. Разобраться с бракованными формами.</string>
+    <string name="description_2">Договорились об отсрочке платежа 60 дней. К каждой поставке будут прилагаться бесплатные образцы для демонстрации покупателям</string>
+    <string name="description_3">Выявились следующие косяки: не перезванивают вовремя покупателям, забывают поставить заказ к отгрузке, не следят за наличием товара на витрине</string>
+    <string name="description_4">Формы приходят с царапинами. Для европейцев это допустимо, а для наших покупателей нет. Замена за наш счет, либо начисление 20% стоимости на бонусный счет.</string>
+    <string name="description_5">Домик на берегу Ладоги. Шашлык. </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
