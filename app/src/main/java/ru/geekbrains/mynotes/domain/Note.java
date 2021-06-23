@@ -8,15 +8,16 @@ import androidx.annotation.StringRes;
 public class Note implements Parcelable {
 
     @StringRes
-    private int date;
+    private final int date;
 
     @StringRes
-    private int title;
+    private final int title;
 
     @StringRes
-    private int description;
+    private final int description;
 
     public Note(int date, int title, int description){
+
         this.date = date;
         this.title = title;
         this.description = description;
@@ -39,6 +40,7 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+
 
     public int getDate() {
         return date;

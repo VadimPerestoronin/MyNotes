@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -24,10 +25,18 @@ import ru.geekbrains.mynotes.ui.list.NoteListFragment;
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked {
 
 
+    private MainRouter router;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        router = new MainRouter(getSupportFragmentManager());
+
+        if (savedInstanceState == null) {
+            router.showNotes();
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,17 +59,24 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                if (item.getItemId() == R.id.favourite){
+                if (item.getItemId() == R.id.all_notes) {
+
+                    router.showNotes();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.favourite) {
 
 
                     return true;
                 }
-                if (item.getItemId() == R.id.settings){
+                if (item.getItemId() == R.id.settings) {
 
                     return true;
                 }
-                if (item.getItemId() == R.id.about){
+                if (item.getItemId() == R.id.about) {
 
+                    router.showAbout();
                     return true;
                 }
 
@@ -69,9 +85,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         });
 
 
-
     }
-
 
 
     @Override

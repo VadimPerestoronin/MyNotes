@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="titles">
+        <item>Планы на неделю</item>
+        <item>Итоги встречи с поставщиком</item>
+        <item>Косяки продавцов</item>
+        <item>Брак форм</item>
+        <item>Планы на выходные</item>
+
+    </string-array>
+
+</resources>

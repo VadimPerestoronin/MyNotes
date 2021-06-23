@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,15 +22,22 @@ import ru.geekbrains.mynotes.R;
 import ru.geekbrains.mynotes.domain.Note;
 import ru.geekbrains.mynotes.domain.NoteRepository;
 import ru.geekbrains.mynotes.domain.NoteRepositoryImpl;
+import ru.geekbrains.mynotes.ui.MainActivity;
 
 public class NoteListFragment extends Fragment {
+
+    public static final String TAG = "NoteListFragment";
+
+    public static NoteListFragment newInstance(){
+        return new NoteListFragment();
+    }
 
     public interface OnNoteClicked {
         void onNoteClicked(Note note);
 
     }
 
-    private NoteRepository noteRepository;
+    private NoteRepository noteRepository = NoteRepositoryImpl.INSTANCE;
 
     private OnNoteClicked onNoteClicked;
 
@@ -64,30 +73,30 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout notesList = view.findViewById(R.id.note_list_container);
+
+        RecyclerView notesList = view.findViewById(R.id.note_list_container);
+
+        notesList.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<Note> notes = noteRepository.getNotes();
 
-        for (Note note: notes){
+        NotesListAdapter notesListAdapter = new NotesListAdapter();
+        notesListAdapter.setData(notes);
 
-            View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_note, notesList, false);
+        notesListAdapter.setListener(new NotesListAdapter.OnNoteClickedListener() {
+            @Override
+            public void onNoteClickedListener(@NonNull Note note) {
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onNoteClicked != null){
-                        onNoteClicked.onNoteClicked(note);
-                    }
-
+                if (onNoteClicked != null){
+                    onNoteClicked.onNoteClicked(note);
                 }
-            });
 
-            TextView noteTitle = itemView.findViewById(R.id.note_title);
-            noteTitle.setText(note.getTitle());
+            }
+        });
 
-            notesList.addView(itemView);
+        notesList.setAdapter(notesListAdapter);
 
-        }
+
     }
 
 

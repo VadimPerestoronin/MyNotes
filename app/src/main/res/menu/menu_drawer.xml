@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/all_notes"
+        android:title="@string/all_notes"
+        android:icon="@drawable/ic_note"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/favourite"
         android:title="@string/favourite"
         android:icon="@drawable/ic_baseline_favorite_24"

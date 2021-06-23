@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/note_list_container"
-        android:orientation="vertical"
+        
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </LinearLayout>
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </androidx.core.widget.NestedScrollView>
