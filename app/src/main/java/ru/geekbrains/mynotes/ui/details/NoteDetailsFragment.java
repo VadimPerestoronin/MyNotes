@@ -20,7 +20,7 @@ import ru.geekbrains.mynotes.domain.Note;
 
 public class NoteDetailsFragment extends Fragment {
 
-
+    public static final String TAG = "NoteDetailsFragment";
 
     private static final String ARG_NOTE = "ARG_NOTE";
 
@@ -47,11 +47,14 @@ public class NoteDetailsFragment extends Fragment {
         TextView noteTitle = view.findViewById(R.id.note_title);
         TextView noteDescription = view.findViewById(R.id.note_description);
 
-        Note note = getArguments().getParcelable(ARG_NOTE);
+        if(getArguments() != null){
+            Note note = getArguments().getParcelable(ARG_NOTE);
 
-        noteDate.setText(note.getDate());
-        noteTitle.setText(note.getTitle());
-        noteDescription.setText(note.getDescription());
+            noteDate.setText(note.getDate());
+            noteTitle.setText(note.getTitle());
+            noteDescription.setText(note.getDescription());
+        }
+
 
     }
 }

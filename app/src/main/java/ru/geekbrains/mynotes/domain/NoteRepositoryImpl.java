@@ -7,6 +7,8 @@ import ru.geekbrains.mynotes.R;
 
 public class NoteRepositoryImpl implements NoteRepository {
 
+    public static final NoteRepository INSTANCE = new NoteRepositoryImpl();
+
     @Override
     public List<Note> getNotes(){
         ArrayList<Note> result = new ArrayList<>();
