@@ -7,23 +7,27 @@ import androidx.annotation.StringRes;
 
 public class Note implements Parcelable {
 
-    @StringRes
-    private final int date;
+    private int id;
 
     @StringRes
-    private final int title;
+    private int date;
 
     @StringRes
-    private final int description;
+    private int title;
 
-    public Note(int date, int title, int description){
+    @StringRes
+    private int description;
 
+    public Note(int id, int date, int title, int description){
+
+        this.id = id;
         this.date = date;
         this.title = title;
         this.description = description;
     }
 
     protected Note(Parcel in) {
+        id = in.readInt();
         date = in.readInt();
         title = in.readInt();
         description = in.readInt();
@@ -42,6 +46,10 @@ public class Note implements Parcelable {
     };
 
 
+    public int getId() {
+        return id;
+    }
+
     public int getDate() {
         return date;
     }
@@ -52,6 +60,18 @@ public class Note implements Parcelable {
 
     public int getDescription() {
         return description;
+    }
+
+    public void setDate(int date) {
+        this.date = date;
+    }
+
+    public void setTitle(int title) {
+        this.title = title;
+    }
+
+    public void setDescription(int description) {
+        this.description = description;
     }
 
     @Override

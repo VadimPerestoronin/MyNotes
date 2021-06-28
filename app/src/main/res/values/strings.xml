@@ -26,6 +26,20 @@
     <string name="about">О приложении</string>
     <string name="text_about">Информация о приложении</string>
     <string name="all_notes">Все заметки</string>
+    <string name="add_note">Добавить заметку</string>
+    <string name="date_default">27.06.2021</string>
+    <string name="title_default">Новая заметка</string>
+    <string name="description_default">Текст заметки</string>
+    <string name="edit_note">Редактировать заметку</string>
+    <string name="delete_note">Удалить заметку</string>
+    <string name="id_1">id_1</string>
+    <string name="id_2">id_2</string>
+    <string name="id_3">id_3</string>
+    <string name="id_4">id_4</string>
+    <string name="id_5">id_5</string>
+    <string name="date_hint">Дата</string>
+    <string name="title_hint">Заголовок</string>
+    <string name="description_hint">Текст заметки</string>
 
 
 </resources>

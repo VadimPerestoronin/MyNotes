@@ -8,6 +8,7 @@ import ru.geekbrains.mynotes.domain.Note;
 import ru.geekbrains.mynotes.ui.details.NoteDetailsFragment;
 import ru.geekbrains.mynotes.ui.info.AboutFragment;
 import ru.geekbrains.mynotes.ui.list.NoteListFragment;
+import ru.geekbrains.mynotes.ui.update.UpdateNoteFragment;
 
 public class MainRouter {
 
@@ -40,6 +41,15 @@ public class MainRouter {
                 .beginTransaction()
                 .replace(R.id.notes_list_fragment, NoteDetailsFragment.newInstance(note), NoteDetailsFragment.TAG)
                 .addToBackStack(NoteDetailsFragment.TAG)
+                .commit();
+
+    }
+
+    public void showEditNote(Note note){
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.notes_list_fragment, UpdateNoteFragment.newInstance(note), UpdateNoteFragment.TAG)
+                .addToBackStack(UpdateNoteFragment.TAG)
                 .commit();
 
     }
