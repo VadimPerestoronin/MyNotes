@@ -4,15 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public interface NoteRepository {
 
-    List<Note> getNotes();
+    void getNotes(Callback<List<Note>> callback);
 
-    Note add(int id, int date, int title, int description);
+    void add(String title, String description, Callback<Note> callback);
 
-    void remove(Note note);
+    void remove(Note note, Callback<Object> callback);
 
-    Note update(@NonNull Note note, @Nullable int date, @Nullable int title, @Nullable int description);
+    void update(@NonNull Note note, @Nullable Date date, @Nullable String title, @Nullable String description, Callback<Note> callback);
 }

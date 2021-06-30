@@ -1,11 +1,21 @@
 package ru.geekbrains.mynotes.domain;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import java.util.logging.LogRecord;
 
 import ru.geekbrains.mynotes.R;
 
@@ -13,43 +23,90 @@ public class NoteRepositoryImpl implements NoteRepository {
 
     public static final NoteRepository INSTANCE = new NoteRepositoryImpl();
 
-    ArrayList<Note> result = new ArrayList<>();
+    private final ArrayList<Note> notes = new ArrayList<>();
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private Handler handler = new Handler(Looper.getMainLooper());
+
+    public NoteRepositoryImpl(){
+
+
+        notes.add(new Note("id_1", new Date(), "Заметка 1", "Текст первой заметки"));
+        notes.add(new Note("id_2", new Date(), "Заметка 2", "Текст второй заметки"));
+
+
+
+    }
+
 
     @Override
-    public List<Note> getNotes(){
+    public void getNotes(Callback<List<Note>> callback) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onSuccess(notes);
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    @Override
+    public void add(String title, String description, Callback<Note> callback) {
+        Note note = new Note(UUID.randomUUID().toString(), new Date(), title, description);
+        notes.add(note);
+
+        callback.onSuccess(note);
+    }
 
 
-        result.add(new Note(R.string.id_1, R.string.date_1, R.string.title_1, R.string.description_1));
-        result.add(new Note(R.string.id_2, R.string.date_2, R.string.title_2, R.string.description_2));
-        result.add(new Note(R.string.id_3, R.string.date_3, R.string.title_3, R.string.description_3));
-        result.add(new Note(R.string.id_4, R.string.date_4, R.string.title_4, R.string.description_4));
-        result.add(new Note(R.string.id_5, R.string.date_5, R.string.title_5, R.string.description_5));
 
-        return result;
+    @Override
+    public void remove(Note note, Callback<Object> callback) {
+        notes.remove(note);
+
+        callback.onSuccess(note);
 
     }
 
 
     @Override
-    public Note add(int id, int date, int title, int description) {
-        Note note = new Note(id, date, title, description);
-        result.add(note);
+    public void update(@NonNull Note note, @Nullable Date date, @Nullable String title, @Nullable String description, Callback<Note> callback) {
 
-        return note;
-    }
 
-    @Override
-    public void remove(Note note) {
-        result.remove(note);
 
-    }
-
-    @Override
-    public Note update(@NonNull Note note, @Nullable int date, @Nullable int title, @Nullable int description) {
-
-        for (int i = 0; i < result.size(); i++){
-            Note item = result.get(i);
+        for (int i = 0; i < notes.size(); i++){
+            Note item = notes.get(i);
             if(item.getId().equals(note.getId())){
+                Date dateToSet = item.getDate();
+                String titleToSet = item.getTitle();
+                String descriptionToSet = item.getDescription();
+
+                if(title != null){
+                    titleToSet = title;
+                }
+
+                if(description != null){
+                    descriptionToSet = description;
+                }
+
+                if(date != null){
+                    dateToSet = date;
+                }
+
+                Note newNote = new Note(note.getId(), dateToSet, titleToSet, descriptionToSet);
+
+                notes.remove(i);
+                notes.add(i, newNote);
+
+                callback.onSuccess(newNote);
 
             }
         }
@@ -59,7 +116,7 @@ public class NoteRepositoryImpl implements NoteRepository {
         note.setDescription(description);
 
 
-        return note;
+        callback.onSuccess(note);
     }
 
 

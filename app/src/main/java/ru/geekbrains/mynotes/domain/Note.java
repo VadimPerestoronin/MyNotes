@@ -5,20 +5,16 @@ import android.os.Parcelable;
 
 import androidx.annotation.StringRes;
 
+import java.util.Date;
+
 public class Note implements Parcelable {
 
-    private int id;
+    private String id;
+    private Date date;
+    private String title;
+    private String description;
 
-    @StringRes
-    private int date;
-
-    @StringRes
-    private int title;
-
-    @StringRes
-    private int description;
-
-    public Note(int id, int date, int title, int description){
+    public Note(String id, Date date, String title, String description){
 
         this.id = id;
         this.date = date;
@@ -27,10 +23,10 @@ public class Note implements Parcelable {
     }
 
     protected Note(Parcel in) {
-        id = in.readInt();
-        date = in.readInt();
-        title = in.readInt();
-        description = in.readInt();
+        id = in.readString();
+        date = new Date(date.getTime());
+        title = in.readString();
+        description = in.readString();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -46,31 +42,31 @@ public class Note implements Parcelable {
     };
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public int getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public int getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public int getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDate(int date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public void setTitle(int title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setDescription(int description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -81,8 +77,9 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(date);
-        dest.writeInt(title);
-        dest.writeInt(description);
+        dest.writeString(id);
+        dest.writeLong(date.getTime());
+        dest.writeString(title);
+        dest.writeString(description);
     }
 }

@@ -14,7 +14,7 @@ public class MainRouter {
 
 
 
-    private FragmentManager fragmentManager;
+    private final FragmentManager fragmentManager;
 
     public MainRouter(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;

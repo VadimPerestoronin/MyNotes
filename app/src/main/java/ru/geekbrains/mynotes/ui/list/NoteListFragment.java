@@ -3,34 +3,33 @@ package ru.geekbrains.mynotes.ui.list;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import ru.geekbrains.mynotes.R;
+import ru.geekbrains.mynotes.domain.Callback;
 import ru.geekbrains.mynotes.domain.Note;
+import ru.geekbrains.mynotes.domain.NoteFirestoreRepository;
 import ru.geekbrains.mynotes.domain.NoteRepository;
 import ru.geekbrains.mynotes.domain.NoteRepositoryImpl;
-import ru.geekbrains.mynotes.ui.MainActivity;
+import ru.geekbrains.mynotes.ui.MainRouter;
+import ru.geekbrains.mynotes.ui.update.UpdateNoteFragment;
 
 import android.view.ContextMenu;
+import android.widget.ProgressBar;
 
 public class NoteListFragment extends Fragment {
 
@@ -46,12 +45,18 @@ public class NoteListFragment extends Fragment {
     }
 
     private NotesListAdapter notesListAdapter;
-    private NoteRepository noteRepository = NoteRepositoryImpl.INSTANCE;
+    private NoteRepository noteRepository = NoteFirestoreRepository.INSTANCE;
 
     private OnNoteClicked onNoteClicked;
 
     private int longClickedIndex;
     private Note longClickedNote;
+
+    private boolean isLoading = false;
+
+    private ProgressBar progressBar;
+
+    private MainRouter router;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -74,8 +79,9 @@ public class NoteListFragment extends Fragment {
 
         notesListAdapter = new NotesListAdapter(this);
 
-        noteRepository = new NoteRepositoryImpl();
+        router = new MainRouter(getParentFragmentManager());
     }
+
 
     @Nullable
     @Override
@@ -94,12 +100,34 @@ public class NoteListFragment extends Fragment {
 
         RecyclerView notesList = view.findViewById(R.id.note_list_container);
 
+        progressBar = view.findViewById(R.id.progress);
+
+        if(isLoading){
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         notesList.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        List<Note> notes = noteRepository.getNotes();
-
         NotesListAdapter notesListAdapter = new NotesListAdapter(this);
-        notesListAdapter.setData(notes);
+
+        notesList.setAdapter(notesListAdapter);
+
+        isLoading = true;
+
+        noteRepository.getNotes(new Callback<List<Note>>() {
+            @Override
+            public void onSuccess(List<Note> notes) {
+                notesListAdapter.setData(notes);
+                notesListAdapter.notifyDataSetChanged();
+
+                isLoading = false;
+
+                if(progressBar != null){
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
+
 
         notesListAdapter.setListener(new NotesListAdapter.OnNoteClickedListener() {
             @Override
@@ -121,29 +149,31 @@ public class NoteListFragment extends Fragment {
             }
         });
 
-        notesList.setAdapter(notesListAdapter);
-
-
-
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.add_note){
 
-                    Note addedNote = noteRepository.add(R.string.date_default, R.string.title_default, R.string.description_default);
+                    noteRepository.add("Новая заметка", "Текст новой заметки", new Callback<Note>() {
+                        @Override
+                        public void onSuccess(Note result) {
+                            int index = notesListAdapter.add(result);
 
-                    int index = notesListAdapter.add(addedNote);
+                            notesListAdapter.notifyItemInserted(index);
 
-                    notesListAdapter.notifyItemInserted(index);
+                            notesList.scrollToPosition(index);
 
-                    notesList.scrollToPosition(index);
-
+                        }
+                    });
 
                     return true;
                 }
                 return false;
             }
         });
+
+
+
 
 
     }
@@ -180,14 +210,27 @@ public class NoteListFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.edit_note){
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.notes_list_fragment, UpdateNoteFragment.newInstance(longClickedNote), UpdateNoteFragment.TAG)
+                    .addToBackStack(UpdateNoteFragment.TAG)
+                    .commit();
+
             return true;
         }
 
         if(item.getItemId() == R.id.delete_note){
 
-            noteRepository.remove(longClickedNote);
-            notesListAdapter.remove(longClickedNote);
-            notesListAdapter.notifyItemRemoved(longClickedIndex);
+            noteRepository.remove(longClickedNote, new Callback<Object>() {
+
+                @Override
+                public void onSuccess(Object result) {
+                    notesListAdapter.remove(longClickedNote);
+                    notesListAdapter.notifyItemRemoved(longClickedIndex);
+                }
+            });
+
+
 
         }
 
