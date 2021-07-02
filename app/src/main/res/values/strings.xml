@@ -40,6 +40,7 @@
     <string name="date_hint">Дата</string>
     <string name="title_hint">Заголовок</string>
     <string name="description_hint">Текст заметки</string>
+    <string name="confirm_edit_note">Сохранить изменения</string>
 
 
 </resources>

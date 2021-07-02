@@ -18,9 +18,6 @@ import ru.geekbrains.mynotes.domain.Note;
 
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NoteViewHolder> {
 
-
-
-
     public interface OnNoteClickedListener{
         void onNoteClickedListener(@NonNull Note note);
     }
@@ -53,6 +50,23 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         notes.remove(longClickedNote);
 
     }
+
+    public void update(Note note) {
+        for (int i = 0; i < notes.size(); i++) {
+
+            Note item = notes.get(i);
+
+            if (item.getId().equals(note.getId())) {
+
+                notes.remove(i);
+                notes.add(i, note);
+
+                return;
+            }
+        }
+    }
+
+
 
     private OnNoteClickedListener listener;
 
@@ -88,6 +102,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
     public void onBindViewHolder(@NonNull NotesListAdapter.NoteViewHolder holder, int position) {
 
         Note note = notes.get(position);
+
         holder.bind(note);
 
     }
@@ -104,6 +119,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         private final TextView noteDate;
         private final TextView noteTitle;
 
+
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -115,8 +131,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
                 }
             });
 
-            noteDate = itemView.findViewById(R.id.note_list_date);
-            noteTitle = itemView.findViewById(R.id.note_list_title);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -131,12 +145,14 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
                 }
             });
 
+            noteDate = itemView.findViewById(R.id.note_list_date);
+            noteTitle = itemView.findViewById(R.id.note_list_title);
 
 
         }
 
         public void bind(Note note) {
-            noteDate.setText(note.getDate());
+            noteDate.setText(note.getDate().toString());
             noteTitle.setText(note.getTitle());
         }
     }

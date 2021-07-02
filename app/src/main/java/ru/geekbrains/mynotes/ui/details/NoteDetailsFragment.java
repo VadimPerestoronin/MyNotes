@@ -50,7 +50,7 @@ public class NoteDetailsFragment extends Fragment {
         if(getArguments() != null){
             Note note = getArguments().getParcelable(ARG_NOTE);
 
-            noteDate.setText(note.getDate());
+            noteDate.setText(note.getDate().toString());
             noteTitle.setText(note.getTitle());
             noteDescription.setText(note.getDescription());
         }
