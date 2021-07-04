@@ -1,6 +1,8 @@
 package ru.geekbrains.mynotes.ui.list;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,10 +29,16 @@ import ru.geekbrains.mynotes.domain.NoteFirestoreRepository;
 import ru.geekbrains.mynotes.domain.NoteRepository;
 import ru.geekbrains.mynotes.domain.NoteRepositoryImpl;
 import ru.geekbrains.mynotes.ui.MainRouter;
+import ru.geekbrains.mynotes.ui.update.AlertDialogFragment;
 import ru.geekbrains.mynotes.ui.update.UpdateNoteFragment;
 
 import android.view.ContextMenu;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import org.jetbrains.annotations.NotNull;
 
 public class NoteListFragment extends Fragment {
 
@@ -57,6 +66,8 @@ public class NoteListFragment extends Fragment {
     private ProgressBar progressBar;
 
     private MainRouter router;
+
+    private String resultDelete;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -96,6 +107,19 @@ public class NoteListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+        getChildFragmentManager().setFragmentResultListener(AlertDialogFragment.RESULT, getViewLifecycleOwner(), new FragmentResultListener() {
+
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                Snackbar.make(getView(), requestKey, Snackbar.LENGTH_LONG).show();
+
+
+                resultDelete = result.getString(AlertDialogFragment.RESULT);
+
+
+            }
+        });
+
         Toolbar toolbar = view.findViewById(R.id.toolbar);
 
         RecyclerView notesList = view.findViewById(R.id.note_list_container);
@@ -107,8 +131,6 @@ public class NoteListFragment extends Fragment {
         }
 
         notesList.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        NotesListAdapter notesListAdapter = new NotesListAdapter(this);
 
         notesList.setAdapter(notesListAdapter);
 
@@ -220,21 +242,62 @@ public class NoteListFragment extends Fragment {
         }
 
         if(item.getItemId() == R.id.delete_note){
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.delete_dialog_title)
+                    .setMessage(R.string.delete_dialog_message)
+                    .setIcon(R.drawable.ic_delete_black)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.btn_positive, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            noteRepository.remove(longClickedNote, new Callback<Object>() {
 
-            noteRepository.remove(longClickedNote, new Callback<Object>() {
+                                @Override
+                                public void onSuccess(Object result) {
+                                    notesListAdapter.remove(longClickedNote);
+                                    notesListAdapter.notifyItemRemoved(longClickedIndex);
+                                }
+                            });
 
-                @Override
-                public void onSuccess(Object result) {
-                    notesListAdapter.remove(longClickedNote);
-                    notesListAdapter.notifyItemRemoved(longClickedIndex);
-                }
-            });
 
+                        }
+                    })
+                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.cancel();
+                        }
+                    });
+
+            builder.show();
+
+
+
+//            showAlertDialogFragment();
+//            resultDelete = getArguments().getString(AlertDialogFragment.RESULT);
+//
+//            if (resultDelete == "delete"){
+//                noteRepository.remove(longClickedNote, new Callback<Object>() {
+//
+//                    @Override
+//                    public void onSuccess(Object result) {
+//                        notesListAdapter.remove(longClickedNote);
+//                        notesListAdapter.notifyItemRemoved(longClickedIndex);
+//                    }
+//                });
+//            }
 
 
         }
 
         return super.onContextItemSelected(item);
     }
+
+//    private void showAlertDialogFragment() {
+//        AlertDialogFragment.newInstance()
+//                .show(getChildFragmentManager(), AlertDialogFragment.TAG);
+//
+//    }
 
 }

@@ -41,6 +41,10 @@
     <string name="title_hint">Заголовок</string>
     <string name="description_hint">Текст заметки</string>
     <string name="confirm_edit_note">Сохранить изменения</string>
+    <string name="delete_dialog_title">Удаление заметки</string>
+    <string name="delete_dialog_message">Вы уверены, что хотите удалить заметку?</string>
+    <string name="btn_positive">OK</string>
+    <string name="btn_cancel">Отмена</string>
 
 
 </resources>

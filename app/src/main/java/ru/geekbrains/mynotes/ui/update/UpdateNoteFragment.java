@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import ru.geekbrains.mynotes.R;
 import ru.geekbrains.mynotes.domain.Callback;
@@ -26,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 public class UpdateNoteFragment extends Fragment {
 
@@ -61,6 +65,8 @@ public class UpdateNoteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
         Note note = getArguments().getParcelable(ARG_NOTE);
 
         NotesListAdapter notesListAdapter = new NotesListAdapter(this);
@@ -72,7 +78,13 @@ public class UpdateNoteFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+
+
+
                 if(item.getItemId() == R.id.confirm_edit_note){
+
+
+
 
                     Date selectedDate = null;
 
@@ -131,4 +143,6 @@ public class UpdateNoteFragment extends Fragment {
             }
         });
     }
+
+
 }
